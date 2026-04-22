@@ -2,7 +2,7 @@
 
 <br />
 
-<img src="../Website/public/logo-mark.svg" alt="reqlocal" width="72" height="72" />
+<img src="./docs/logo-mark.svg" alt="reqlocal" width="72" height="72" />
 
 # reqlocal
 
@@ -20,7 +20,7 @@ Open-source **request-scoped context** for Node.js with **`AsyncLocalStorage`** 
 
 <br />
 
-[Website](../Website) · [Docs](../Website/README.md#docs) · [API Reference](#api-reference) · [Pricing](../Website/README.md#routes)
+[Website](https://github.com/Abdul-Moiz31/reqlocal) · [Docs](#install) · [API Reference](#api-reference) · [Pricing](https://www.npmjs.com/package/reqlocal)
 
 <br />
 
@@ -221,7 +221,7 @@ HTTP request
 ## Comparison
 
 | | reqlocal | Manual threading | Implicit globals |
-|---|:---:|:---:|:---:|
+| --- | :---: | :---: | :---: |
 | **Typed context** | ✅ | ✅ (verbose) | ❌ |
 | **Works after `await`** | ✅ | ✅ | ⚠️ error-prone |
 | **Zero extra runtime deps** | ✅ | ✅ | ✅ |
@@ -258,7 +258,7 @@ Fastify plugin (via **`fastify-plugin`**). Register with **`{ config }`** in the
 ### Exported types
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `ContextConfig` | Keys → `(req: IncomingMessage) => unknown` |
 | `InferContext<C>` | Inferred context shape from **`C`** |
 | `ReqlocalMiddleware` | Connect-compatible middleware type |
@@ -306,17 +306,11 @@ Issues and PRs welcome. Please run **`npm test`** before submitting.
 
 ## Marketing site
 
-Next.js app in **[`../Website`](../Website)** — landing page, **`/docs`**, **`/pricing`**.
-
-```bash
-cd ../Website && npm install && npm run dev
-```
-
-Open **http://localhost:3000/docs** for the full docs UI.
+If you use the optional Next.js app in a monorepo (`Website/`), run `cd Website && npm install && npm run dev` and open **http://localhost:3000/docs**. This repository’s README is self-contained for npm and GitHub.
 
 ## License
 
-MIT — use it in any project, commercial or open-source. See [`LICENSE`](./LICENSE).
+MIT — use it in any project, commercial or open-source. See **[LICENSE](./LICENSE)**.
 
 ---
 
@@ -324,7 +318,7 @@ MIT — use it in any project, commercial or open-source. See [`LICENSE`](./LICE
 
 <br />
 
-Documentation hub inspired by projects like [**@isdisposable/js**](https://github.com/isdisposable/js).
+**Built by** [@Abdul-Moiz31](https://github.com/Abdul-Moiz31)
 
 <br />
 

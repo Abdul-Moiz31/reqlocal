@@ -1,12 +1,12 @@
 {
   "name": "reqlocal",
   "version": "0.1.0",
-  "description": "Request-scoped context for Node.js via AsyncLocalStorage — access typed context anywhere in the request lifecycle without parameter threading.",
+  "description": "Request-scoped context for Node.js via AsyncLocalStorage \u2014 access typed context anywhere in the request lifecycle without parameter threading.",
   "license": "MIT",
-  "author": "",
+  "author": "Abdul-Moiz31 (https://github.com/Abdul-Moiz31)",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/Abdul-Moiz31/reqlocal.git"
   },
   "keywords": [
     "async-local-storage",
@@ -28,6 +28,7 @@
   },
   "files": [
     "dist",
+    "docs/logo-mark.svg",
     "README.md"
   ],
   "engines": {
@@ -50,9 +51,11 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.10",
     "@types/supertest": "^6.0.2",
+    "dotenv": "^8.2.0",
     "express": "^4.19.2",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
+    "node-fetch": "^3.3.2",
     "supertest": "^7.0.0",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3",
