@@ -15,18 +15,33 @@
 
 <br />
 
-Open-source **request-scoped context** for Node.js with **`AsyncLocalStorage`** — typed **`getCtx()`** for every layer of your handler stack.  
-**Zero runtime dependencies.** TypeScript-native. **Express** and **Fastify** ready.
+Open-source **request-scoped context** for Node.js with **`AsyncLocalStorage`**: typed **`getCtx()`** anywhere in the request lifecycle, without passing bags of arguments through every helper.
+
+**Zero runtime dependencies.** TypeScript-first. Works with **Express** and **Fastify**.
 
 <br />
 
-[Website](https://github.com/Abdul-Moiz31/reqlocal) · [Docs](#install) · [API Reference](#api-reference) · [Pricing](https://www.npmjs.com/package/reqlocal)
+[Repo](https://github.com/Abdul-Moiz31/reqlocal) · [Install](#install) · [Why this exists](#why-i-built-this) · [API](#api-reference)
 
 <br />
 
 ---
 
 </div>
+
+## Why I built this
+
+This did not come from a toy example. It came from **adminIde-stack**, the big multi-tenant stack I work on: GraphQL, Auth0, billing, org and project context, subscriptions, and a `ServerContext` type that keeps growing because every package augments the same central context interface.
+
+In that codebase, a single request is not just headers and a body. You end up with account id, org id, tenant id, permissions, parsed URI segments for the current page, sometimes a WebSocket connection with `connectionParams` instead of a normal `req`, and special paths like secret API tokens. Middleware like `addUserContext` has to branch across HTTP, WebSocket, and token flows, and downstream code still expects something that looks like a request so helpers such as `getPermissionsFromContext` can read `context.req`, `context.userContext`, and `context.user` together. Plugins do the same kind of thing, for example resolving tenant off `requestContext.contextValue.req?.tenant` before an operation runs.
+
+So the "real time" problem was not only long parameter lists. It was that **everything interesting about the caller lived inside a fat GraphQL context and a stuffed `req`**, and serious logic could not run unless you threaded that whole picture through resolvers, middleware, and services. When subscriptions need a mock `req` so the same permission code can run, you feel how heavy that model is.
+
+**reqlocal** is what I wanted for the other end of the spectrum: small HTTP services, edge functions on the Node runtime, internal APIs, and tests. You define a **narrow** request-scoped object once at the edge. After that you call **`getCtx()`** instead of dragging a god object through every layer. It uses the same primitive Node gives you for async-safe isolation: **`AsyncLocalStorage`**. No extra runtime dependencies, just **`reqlocal`** middleware (or the Fastify plugin) plus **`runWithCtx`** when you are not inside Express.
+
+It does not replace a full Apollo `ServerContext` on its own. It is the distilled habit I wish I had everywhere: **establish scope once, read it anywhere in the async tree**, without inventing another global or another ten constructor arguments.
+
+If you have lived in a stack like adminIde-stack, you already know why that matters.
 
 ## Install
 
@@ -68,9 +83,9 @@ app.get('/me', (_req, res) => {
 });
 ```
 
-Typed context for the whole request — including after `await` — without passing arguments through every helper.
+Typed context for the whole request, including after `await`, without threading arguments through every helper.
 
-## Before / after
+## Before and after
 
 **Manual threading**
 
@@ -119,7 +134,7 @@ function audit(): AppContext {
 }
 ```
 
-## Background jobs
+## Background jobs and tests
 
 ```ts
 import { runWithCtx, getCtx } from 'reqlocal';
@@ -134,7 +149,7 @@ Nested **`runWithCtx`** calls stack correctly with HTTP-bound context.
 
 ## Framework integrations
 
-### Express — middleware
+### Express (middleware)
 
 ```ts
 import express from 'express';
@@ -156,7 +171,7 @@ app.get('/api/hello', (_req, res) => {
 
 Mount **`reqlocal`** **before** any route or middleware that calls **`getCtx()`**.
 
-### Fastify — plugin
+### Fastify (plugin)
 
 ```ts
 import Fastify from 'fastify';
@@ -175,7 +190,7 @@ app.get('/api/me', async () => getCtx<{ userId: string }>());
 
 Config callbacks receive the Node **`IncomingMessage`** (`request.raw`).
 
-### Next.js — route handler (Node runtime)
+### Next.js (route handler, Node runtime)
 
 Use the **Node.js** runtime (not Edge). Establish context with **`runWithCtx`** when you are not behind Express:
 
@@ -216,7 +231,7 @@ HTTP request
 └──────────────────┘     └────────────────────────────┘
 ```
 
-**No globals:** each concurrent request keeps an isolated store. No `cls-hooked` and no extra npm runtime dependencies — only Node’s built-in ALS.
+Each concurrent request gets an isolated store. No `cls-hooked` and no extra npm runtime dependencies: only Node’s built-in ALS.
 
 ## Comparison
 
@@ -227,9 +242,9 @@ HTTP request
 | **Zero extra runtime deps** | ✅ | ✅ | ✅ |
 | **Concurrent requests safe** | ✅ | ✅ | ❌ |
 | **Express / Fastify** | ✅ | ✅ | ⚠️ ad hoc |
-| **`fastify-plugin` wrapper** | ✅ | — | — |
+| **`fastify-plugin` wrapper** | ✅ | N/A | N/A |
 
-## API Reference
+## API reference
 
 ### `getCtx<T>(): T`
 
@@ -310,7 +325,7 @@ If you use the optional Next.js app in a monorepo (`Website/`), run `cd Website 
 
 ## License
 
-MIT — use it in any project, commercial or open-source. See **[LICENSE](./LICENSE)**.
+MIT. Use it in any project, commercial or open-source. See **[LICENSE](./LICENSE)**.
 
 ---
 
